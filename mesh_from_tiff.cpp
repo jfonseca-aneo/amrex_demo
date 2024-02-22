@@ -30,12 +30,7 @@ public:
     tiff_to_track = TIFFOpen(pathAsCString, "r");
 
     if (tiff_to_track) {
-      uint32_t depth = 0;
-      do {
-        depth++;
-      } while (TIFFReadDirectory(tiff_to_track));
-
-      layers = depth;
+      layers = TIFFNumberOfDirectories(tiff_to_track);
       TIFFGetField(tiff_to_track, TIFFTAG_IMAGEWIDTH, &width);
       TIFFGetField(tiff_to_track, TIFFTAG_IMAGELENGTH, &height);
     }
@@ -44,7 +39,7 @@ public:
   ~TiffHolder() { TIFFClose(tiff_to_track); }
 
   void printTiffInfo() {
-    std::cout << "Image dimension information:\n";
+    Print() << "Image dimension information:\n";
     Print() << "Dim X: " << width << "\n";
     Print() << "Dim Y: " << height << "\n";
     Print() << "Dim Z: " << layers << "\n";
@@ -106,8 +101,8 @@ int main(int argc, char *argv[]) {
     // Distribute boxes among MPI ranks
     DistributionMapping dm(box_array);
 
-    // This defines the physical box, [-1,1] in each direction.
-    RealBox real_box({AMREX_D_DECL(-1.0, -1.0, -1.0)},
+    // This defines the physical box, [0,1] in each direction.
+    RealBox real_box({AMREX_D_DECL(0.0, 0.0, 0.0)},
                      {AMREX_D_DECL(1.0, 1.0, 1.0)});
 
     // This sets the boundary conditions to be doubly or triply periodic
@@ -117,7 +112,7 @@ int main(int argc, char *argv[]) {
     int coord = 0;
 
     // This defines a Geometry object
-    Geometry geom(domain, real_box, coord, is_periodic);
+    geometry.define(domain, real_box, coord, is_periodic);
 
     // Create a MultiFab to store data on the grids
     int ncomp = 1; // Number of components
@@ -142,13 +137,9 @@ int main(int argc, char *argv[]) {
       simul_tif.setPixels(box, a);
     }
 
-    // Output mesh information to a plot file
-    int step = 0;    // Time step
-    Real time = 0.0; // Simulation time
-
-    const std::string &plotfilename = "mesh_from_tiff";
-    WriteSingleLevelPlotfile(plotfilename, multi_fab, {"data"}, geom, time,
-                             step);
+    const std::string &plotfilename = "amrex_mesh";
+    WriteSingleLevelPlotfile(plotfilename, multi_fab, {"data"}, geometry, 0.,
+                             0.);
   }
   amrex::Finalize();
 

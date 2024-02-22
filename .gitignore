@@ -45,3 +45,6 @@
 
 # makefiles
 Makefile
+
+#AMREX mesh files
+amrex_mesh*

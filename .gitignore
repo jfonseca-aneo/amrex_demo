@@ -48,3 +48,6 @@ Makefile
 
 #AMREX mesh files
 amrex_mesh*
+
+#cmake build directory
+build/

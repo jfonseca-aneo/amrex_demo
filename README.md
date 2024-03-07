@@ -16,12 +16,19 @@ fine between phase transitions / boundaries.
 - [amrex](https://github.com/AMReX-Codes/amrex)
 - [libTIFF](http://www.libtiff.org/)
 
-A [make file](./Makefile.template) template has been provided
-to facilitate the compilation, just set the `AMREX_LIBRARY_HOME`
-defined in that file and rename it to `Makefile`. 
+Assuming that both libraries are in your `$PATH`, compilation follows the standard `cmake` workflow
+
+```bash
+
+mkdir /path/to/build_dir
+cd /path/to/build_dir
+cmake -S /path/to/this/repository
+make
+
+```
 
 ## Usage
 
-Successful compilation yields the  executable `mesh_from_tiff` which takes
-as argument the file '[inputFile](./inputFile)' that contains the path to the desired `tiff`
+Successful compilation yields the  executable `/build/AMREX_DEMO` which takes
+as argument the file '[inputFile](./test/inputFile)' that contains the path to the desired `.tif`
 image to build the mesh from.

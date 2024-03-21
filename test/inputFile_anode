@@ -1,0 +1,41 @@
+# *****************************************************************
+# Path to image to generate mesh from
+# *****************************************************************
+tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif image_anode/anode_40nm.tif
+
+material_name = anode
+# *****************************************************************
+# Problem size and geometry
+# *****************************************************************
+geometry.prob_lo     =  0.0  0.0  0.0 
+geometry.prob_hi     =  1.0  1.0  1.0
+
+# 1 = periodic
+# 0 = walls (homogeneous Neumann, dphi/dn=0)
+geometry.is_periodic =  0    0    0
+
+# *****************************************************************
+# VERBOSITY
+# *****************************************************************
+amr.v              = 1       # verbosity in Amr
+
+# *****************************************************************
+# Resolution and refinement
+# *****************************************************************
+amr.n_cell          = 88 104 48
+amr.max_level       = 1     # maximum level number allowed -- 
+                              # number of levels = max_level + 1
+
+amr.ref_ratio       =  2 2 2 2 # refinement ratio between levels
+
+# *****************************************************************
+# Control of grid creation
+# *****************************************************************
+# Blocking factor for grid creation in each dimension --
+#   this ensures that every grid is coarsenable by a factor of 8 --
+#   this is mostly relevant for multigrid performance
+amr.blocking_factor_x = 2
+amr.blocking_factor_y = 2
+amr.blocking_factor_z = 2
+
+amr.max_grid_size   = 2

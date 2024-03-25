@@ -1,7 +1,7 @@
 # *****************************************************************
 # Path to image to generate mesh from
 # *****************************************************************
-tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif image_anode/anode_40nm.tif
+tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif
 
 material_name = anode
 # *****************************************************************

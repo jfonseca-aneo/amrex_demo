@@ -14,11 +14,7 @@ public:
   NotImplemented() : std::logic_error("Function not yet implemented"){};
 };
 
-AmrMeshFromTiff::AmrMeshFromTiff() {
-  ReadParameters();
-  int nlevs_max = max_level + 1;
-  pixel_data.resize(nlevs_max);
-}
+AmrMeshFromTiff::AmrMeshFromTiff() { ReadParameters(); }
 
 AmrMeshFromTiff::~AmrMeshFromTiff() {}
 
@@ -40,21 +36,47 @@ void AmrMeshFromTiff::MakeNewLevelFromScratch(int lev, Real time,
                                               const BoxArray &ba,
                                               const DistributionMapping &dm) {
 
+  static bool first_run = true;
   const int ncomp = 1;
   const int nghost = 1;
+
+  /* Remake finnest level with the current box array and distribution mapping */
+  amrex::Print() << "MakeNewFromScratch: Processing finnest level " << lev
+                 << "\n";
+
+  pixel_data[max_level].clear();
+
+  BoxArray finner_ba = ba;
+  int max_ref = 1 << (max_level - lev);
+  finner_ba.refine(max_ref);
+
+  pixel_data[max_level].define(finner_ba, dm, ncomp, nghost);
+
+  TiffHolder finnest_level_tiff(tiff_paths.back());
+
+  MultiFab &fstate = pixel_data[max_level];
+  for (MFIter mfi(fstate); mfi.isValid(); ++mfi) {
+    const Box &box = mfi.validbox();
+    auto const &a = fstate.array(mfi);
+    finnest_level_tiff.setPixels(box, a);
+  }
+
+  if (first_run) {
+    first_run = false;
+    WriteSingleLevelPlotfile({"finner_level"}, fstate, {material_name},
+                             Geom(max_level), 0., 0.);
+  }
+
+  amrex::Print() << "MakeNewFromScratch: init data for level " << lev << "\n";
 
   pixel_data[lev].define(ba, dm, ncomp, nghost);
 
   TiffHolder this_level_tiff(tiff_paths[lev]);
-
   this_level_tiff.printTiffInfo();
 
   MultiFab &state = pixel_data[lev];
-
-  const auto problo = Geom(lev).ProbLoArray();
-  const auto dx = Geom(lev).CellSizeArray();
-
-  amrex::Print() << "MakeNewFromScratch: init data for level " << lev << "\n";
+  // const auto problo = Geom(lev).ProbLoArray();
+  // const auto dx = Geom(lev).CellSizeArray();
   for (MFIter mfi(state); mfi.isValid(); ++mfi) {
     const Box &box = mfi.validbox();
     auto const &a = state.array(mfi);
@@ -75,14 +97,20 @@ void AmrMeshFromTiff::ErrorEst(int lev, TagBoxArray &tags, Real,
   const int tagval = TagBox::SET;
 
   const MultiFab &state = pixel_data[lev];
+  const MultiFab &fine_state = pixel_data[max_level];
 
   amrex::Print() << "ERROREST for level " << lev << "\n";
 
   for (MFIter mfi(state); mfi.isValid(); ++mfi) {
     const Box &box = mfi.validbox();
+    Box b = box;
+    int ref = 1 << (max_level - lev);
+    b.refine(ref);
     const auto &state_arr = state.array(mfi);
+    const auto &fine_state_arr = fine_state.array(mfi);
     const auto &tag_arr = tags.array(mfi);
-    tagger.cell_marker_test(box, tag_arr, state_arr, tagval);
+    tagger.cell_marker(box, b, tag_arr, state_arr, fine_state_arr, tagval);
+    // tagger.cell_marker_test(box, tag_arr, state_arr, tagval);
   }
 }
 
@@ -100,6 +128,9 @@ void AmrMeshFromTiff::ReadParameters() {
   pp.get("amr.max_level", max_levels);
   istep.resize(max_levels + 1, 0);
   pp.get("material_name", material_name);
+
+  /* pixel_data[max_lev + 1] will contain the finnest grid */
+  pixel_data.resize(max_levels + 1);
 }
 
 void AmrMeshFromTiff::InitData() {

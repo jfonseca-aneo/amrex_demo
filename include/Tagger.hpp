@@ -3,23 +3,22 @@
 
 #include <AMReX.H>
 #include <AMReX_Array4.H>
+#include <TiffHolder.hpp>
 
 class Tagger {
 
 private:
-  AMREX_FORCE_INLINE
-  bool is_not_homogeneous(amrex::Box const &f_bx,
-                          amrex::Array4<const amrex::Real> const &f_a) {
+  bool is_not_homogeneous(amrex::Box const &fine_bx, TiffHolder &ref_image) {
 
-    const auto f_lo = amrex::lbound(f_bx);
-    const auto f_hi = amrex::ubound(f_bx);
+    const auto lo = amrex::lbound(fine_bx);
+    const auto hi = amrex::ubound(fine_bx);
 
-    auto val = f_a(f_lo.x, f_lo.y, f_lo.z);
-
-    for (int k = f_lo.z; k <= f_hi.z; ++k) {
-      for (int j = f_lo.y; j <= f_hi.y; ++j) {
-        for (int i = f_lo.x; i <= f_hi.x; ++i) {
-          if (f_a(i, j, k) != val)
+    auto val = ref_image.imageVectors[lo.z][lo.y * ref_image.width + lo.x];
+    for (int k = lo.z; k <= hi.z; ++k) {
+      auto img = ref_image.imageVectors[k];
+      for (int j = lo.y; j <= hi.y; ++j) {
+        for (int i = lo.x; i <= hi.x; ++i) {
+          if (img[j * ref_image.width + i] != val)
             return true;
         }
       }
@@ -41,35 +40,17 @@ private:
   }
 
 public:
-  void cell_marker(amrex::Box const &bx, amrex::Box const &f_bx,
-                   amrex::Array4<char> const &tag,
-                   amrex::Array4<const amrex::Real> const &a,
-                   amrex::Array4<const amrex::Real> const &f_a, char tagval) {
+  void cell_marker(amrex::Box const &bx, amrex::Box const &fine_bx,
+                   amrex::Array4<char> const &tag, TiffHolder &finnest_tiff,
+                   char tagval) {
 
     const auto lo = amrex::lbound(bx);
     const auto hi = amrex::ubound(bx);
 
-    if (is_diagonal(f_bx, f_a))
+    if (is_not_homogeneous(fine_bx, finnest_tiff)) {
       for (int k = lo.z; k <= hi.z; ++k) {
         for (int j = lo.y; j <= hi.y; ++j) {
           for (int i = lo.x; i <= hi.x; ++i) {
-            tag(i, j, k) = tagval;
-          }
-        }
-      }
-  }
-
-  void cell_marker_test(amrex::Box const &bx, amrex::Array4<char> const &tag,
-                        amrex::Array4<const amrex::Real> const &a,
-                        char tagval) {
-
-    const auto lo = amrex::lbound(bx);
-    const auto hi = amrex::ubound(bx);
-
-    for (int k = lo.z; k <= hi.z; ++k) {
-      for (int j = lo.y; j <= hi.y; ++j) {
-        for (int i = lo.x; i <= hi.x; ++i) {
-          if (i == j) {
             tag(i, j, k) = tagval;
           }
         }

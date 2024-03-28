@@ -11,6 +11,7 @@ public:
   // constructor - reads in parameters from inputs file
   //             - sizes multilevel arrays and data structures
   AmrMeshFromTiff();
+
   virtual ~AmrMeshFromTiff();
 
   // initializes multilevel data
@@ -46,15 +47,15 @@ public:
                         int ngrow) override;
 
 private:
-  void ReadParameters();
-
   amrex::Vector<int> istep;
-
-  amrex::Vector<TiffHolder> tiff_images;
 
   amrex::Vector<std::string> tiff_paths;
 
+  amrex::Vector<TiffHolder> tiff_images;
+
   amrex::Vector<amrex::MultiFab> pixel_data;
+
+  int num_levels;
 
   Tagger tagger;
 
@@ -62,7 +63,7 @@ private:
 
   std::string plot_file{"amrex_demo"};
 
-  std::string BuildPlotFileName() const;
+  std::string BuildPlotFileName(std::string base_name) const;
 
   amrex::Vector<const amrex::MultiFab *> PlotFileMF() const;
 

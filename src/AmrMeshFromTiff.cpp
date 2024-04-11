@@ -125,11 +125,9 @@ void AmrMeshFromTiff::ErrorEst(int lev, TagBoxArray &tags, Real,
 
   for (MFIter mfi(state); mfi.isValid(); ++mfi) {
     const Box &box = mfi.validbox();
-    Box b = box;
-    int ref = 1 << (max_level - lev);
-    b.refine(ref);
     const auto &tag_arr = tags.array(mfi);
-    tagger.cell_marker(box, b, tag_arr, tiff_images.back(), tagval);
+    tagger.cell_marker(box, lev, max_level, tag_arr, tiff_images.back(),
+                       tagval);
   }
 }
 

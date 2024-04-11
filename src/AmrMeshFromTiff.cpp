@@ -128,7 +128,6 @@ void AmrMeshFromTiff::ErrorEst(int lev, TagBoxArray &tags, Real,
     Box b = box;
     int ref = 1 << (max_level - lev);
     b.refine(ref);
-    const auto &state_arr = state.array(mfi);
     const auto &tag_arr = tags.array(mfi);
     tagger.cell_marker(box, b, tag_arr, tiff_images.back(), tagval);
   }

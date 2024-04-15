@@ -38,13 +38,13 @@ amr.ref_ratio       = 2 2 2 2 # refinement ratio between levels
 # Blocking factor for grid creation in each dimension --
 #   this ensures that every grid is coarsenable by a factor of 8 --
 #   this is mostly relevant for multigrid performance
-amr.blocking_factor_x = 4 4 4 8
-amr.blocking_factor_y = 4 4 4 8
-amr.blocking_factor_z = 4 4 4 8
+amr.blocking_factor_x = 2
+amr.blocking_factor_y = 2
+amr.blocking_factor_z = 2
 
 amr.max_grid_size   = 8
 
 amr.grid_eff = 1.0
 
 
-amr.n_error_buf = 1
+amr.n_error_buf = 0

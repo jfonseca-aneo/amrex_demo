@@ -3,8 +3,8 @@
 # *****************************************************************
 #tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif
 #tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif
-#tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif
-tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif image_anode/anode_40nm.tif
+tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif
+#tiffPath = image_anode/anode_640nm.tif image_anode/anode_320nm.tif image_anode/anode_160nm.tif image_anode/anode_80nm.tif image_anode/anode_40nm.tif
 
 
 material_name = anode
@@ -37,13 +37,13 @@ amr.ref_ratio       =  2 # refinement ratio between levels
 # *****************************************************************
 # Blocking factor for grid creation in each dimension
 #   this ensures that every grid is coarsenable by the given factor
-amr.blocking_factor_x = 4 4 4 8
-amr.blocking_factor_y = 4 4 4 8
-amr.blocking_factor_z = 4 4 4 8
+amr.blocking_factor_x = 2
+amr.blocking_factor_y = 2
+amr.blocking_factor_z = 2
 
 amr.max_grid_size   = 8
 
 amr.grid_eff = 1.0
 
 
-amr.n_error_buf = 1
+amr.n_error_buf = 0

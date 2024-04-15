@@ -70,31 +70,6 @@ void AmrMeshFromTiff::MakeNewLevelFromScratch(int lev, Real time,
   const int ncomp = 1;
   const int nghost = 0;
 
-  static bool first_run = true;
-  if (first_run) {
-
-    BoxArray finner_ba = ba;
-    int max_ref = 1 << max_level;
-    finner_ba.refine(max_ref);
-
-    pixel_data[max_level].define(finner_ba, dm, ncomp, nghost);
-
-    MultiFab &fstate = pixel_data[max_level];
-    for (MFIter mfi(fstate); mfi.isValid(); ++mfi) {
-      const Box &box = mfi.validbox();
-      auto const &a = fstate.array(mfi);
-      tiff_images[max_level].setPixels(box, a);
-    }
-
-    const std::string &plotfilename = BuildPlotFileName("finnest_level");
-    WriteSingleLevelPlotfile(plotfilename, fstate, {material_name},
-                             Geom(max_level), 0., 0.);
-
-    first_run = false;
-
-    pixel_data[max_level].clear();
-  }
-
   amrex::Print() << "MakeNewFromScratch: init data for level " << lev << "\n";
 
   pixel_data[lev].define(ba, dm, ncomp, nghost);

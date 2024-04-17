@@ -76,9 +76,9 @@ public:
 
     if (tiff_to_track) {
       std::vector<uint32_t> raster(width * height);
-      if (TIFFReadRGBAImage(tiff_to_track, width, height, raster.data())) {
-        for (int k = lo.z; k <= hi.z; ++k) {
-          auto img = TIFFSetDirectory(tiff_to_track, k);
+      for (int k = lo.z; k <= hi.z; ++k) {
+        auto img = TIFFSetDirectory(tiff_to_track, k);
+        if (TIFFReadRGBAImage(tiff_to_track, width, height, raster.data())) {
           for (int j = lo.y; j <= hi.y; ++j) {
             for (int i = lo.x; i <= hi.x; ++i) {
               a(i, j, k) =
@@ -87,8 +87,8 @@ public:
           }
         }
       }
-      TIFFClose(tiff_to_track);
     }
+    TIFFClose(tiff_to_track);
   }
 };
 

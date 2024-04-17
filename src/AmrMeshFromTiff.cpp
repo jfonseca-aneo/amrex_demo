@@ -46,6 +46,7 @@ AmrMeshFromTiff::AmrMeshFromTiff() {
     tiff_holder.printTiffInfo();
     tiff_images.push_back(std::move(tiff_holder));
   }
+  tiff_images.back().setImageVectors();
 }
 
 AmrMeshFromTiff::~AmrMeshFromTiff() {}

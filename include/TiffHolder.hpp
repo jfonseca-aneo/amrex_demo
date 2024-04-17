@@ -75,13 +75,15 @@ public:
     auto tiff_to_track = TIFFOpen(tiff_path.c_str(), "r");
 
     if (tiff_to_track) {
-      for (int k = lo.z; k <= hi.z; ++k) {
-        auto img = TIFFSetDirectory(tiff_to_track, k);
-        std::vector<uint32_t> raster(width * height);
-        for (int j = lo.y; j <= hi.y; ++j) {
-          for (int i = lo.x; i <= hi.x; ++i) {
-            a(i, j, k) =
-                static_cast<amrex::Real>(TIFFGetR(raster[j * width + i]));
+      std::vector<uint32_t> raster(width * height);
+      if (TIFFReadRGBAImage(tiff_to_track, width, height, raster.data())) {
+        for (int k = lo.z; k <= hi.z; ++k) {
+          auto img = TIFFSetDirectory(tiff_to_track, k);
+          for (int j = lo.y; j <= hi.y; ++j) {
+            for (int i = lo.x; i <= hi.x; ++i) {
+              a(i, j, k) =
+                  static_cast<amrex::Real>(TIFFGetR(raster[j * width + i]));
+            }
           }
         }
       }

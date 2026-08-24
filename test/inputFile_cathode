@@ -6,8 +6,8 @@
 #tiffPath = image_cathode/cathode_640nm.tif image_cathode/cathode_320nm.tif image_cathode/cathode_160nm.tif image_cathode/cathode_80nm.tif
 tiffPath = image_cathode/cathode_640nm.tif image_cathode/cathode_320nm.tif image_cathode/cathode_160nm.tif image_cathode/cathode_80nm.tif image_cathode/cathode_40nm.tif
 
-material_name = cathode
 
+material_name = cathode
 # *****************************************************************
 # Problem size and geometry
 # *****************************************************************
@@ -26,23 +26,22 @@ amr.v              = 1       # verbosity in Amr
 # *****************************************************************
 # Resolution and refinement
 # *****************************************************************
-amr.n_cell          = 32 16 32
-amr.max_level       = 4     # maximum level number allowed -- 
-                              # number of levels = max_level + 1
+amr.n_cell          = 8 8 8
+amr.max_level       = 4    # maximum level number allowed -- 
+                            # number of levels = max_level + 1
 
-amr.ref_ratio       = 2 2 2 2 # refinement ratio between levels
+amr.ref_ratio       =  2 # refinement ratio between levels
 
 # *****************************************************************
 # Control of grid creation
 # *****************************************************************
-# Blocking factor for grid creation in each dimension --
-#   this ensures that every grid is coarsenable by a factor of 8 --
-#   this is mostly relevant for multigrid performance
+# Blocking factor for grid creation in each dimension
+#   this ensures that every grid is coarsenable by the given factor
 amr.blocking_factor_x = 2
 amr.blocking_factor_y = 2
 amr.blocking_factor_z = 2
 
-amr.max_grid_size   = 8
+amr.max_grid_size   = 16
 
 amr.grid_eff = 1.0
 

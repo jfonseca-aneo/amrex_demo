@@ -40,24 +40,24 @@ make
 
 ## Usage
 
-Successful compilation yields the executable `demo_exe/main` under the
+Successful compilation yields the executable `src/main` under the
 build directory, which takes as argument an input file describing the
-problem, e.g. [inputFile_anode](./test/inputFile_anode) or
-[inputFile_cathode](./test/inputFile_cathode). Among other AMReX
+problem, e.g. [inputFile_anode](./data/inputFile_anode) or
+[inputFile_cathode](./data/inputFile_cathode). Among other AMReX
 parameters, that file lists the `tiffPath` of one image stack per AMR
 level (coarsest first) and a `material_name` used to name the output
 plotfile:
 
 ```bash
 
-mpirun -np <nprocs> ./demo_exe/main inputFile_anode
+mpirun -np <nprocs> ./src/main inputFile_anode
 
 ```
 
 Sample synthetic input images (a coarse anode and cathode microstructure,
 each provided at 5 resolutions from 640nm down to 40nm per pixel) are
-provided under [`test/image_anode`](./test/image_anode) and
-[`test/image_cathode`](./test/image_cathode); they are copied next to the
+provided under [`data/image_anode`](./data/image_anode) and
+[`data/image_cathode`](./data/image_cathode); they are copied next to the
 executable at build time, together with the two sample input files.
 
 Successful runs write a multi-level plotfile (e.g. `amrex_demo_anode`)

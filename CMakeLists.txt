@@ -24,7 +24,7 @@ set(amrex_demo VERSION ${amrex_demo_VERSION_STRING})
 message(STATUS "Configuring version : ${amrex_demo_VERSION_STRING_FULL}")
 
 add_library(AMREX_DEMO SHARED
-  src/AmrMeshFromTiff.cpp
+  lib/AmrMeshFromTiff.cpp
 )
 
 target_include_directories(AMREX_DEMO
@@ -32,7 +32,7 @@ target_include_directories(AMREX_DEMO
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -53,11 +53,11 @@ target_link_libraries(AMREX_DEMO
   PUBLIC AMReX::amrex
 )
 
-add_subdirectory (demo_exe)
+add_subdirectory (src)
 
 install (TARGETS AMREX_DEMO DESTINATION lib)
 
 add_custom_target(copy-files ALL
   COMMAND ${CMAKE_COMMAND} -E copy_directory
-  ${CMAKE_SOURCE_DIR}/test
-  ${CMAKE_CURRENT_BINARY_DIR}/demo_exe)
+  ${CMAKE_SOURCE_DIR}/data
+  ${CMAKE_CURRENT_BINARY_DIR}/src)
